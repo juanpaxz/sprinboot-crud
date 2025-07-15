@@ -2,12 +2,16 @@ package com.juan.curso.springboot.app.sprinbootcrud.controllers;
 
 import com.juan.curso.springboot.app.sprinbootcrud.model.Product;
 import com.juan.curso.springboot.app.sprinbootcrud.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -35,13 +39,19 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return validation(bindingResult);
+        }
         Product savedProduct = productService.save(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<?> updateProduct(@PathVariable Long id,@Valid @RequestBody Product product, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return validation(bindingResult);
+        }
         Optional<Product> existingProduct = productService.update(id, product);
         if (existingProduct.isPresent()) {
             return ResponseEntity.ok(existingProduct.get());
@@ -60,4 +70,12 @@ public class ProductController {
         }
     }
 
+    private ResponseEntity<?> validation(BindingResult bindingResult) {
+    Map<String, String> errors = bindingResult.getFieldErrors().stream()
+            .collect(Collectors.toMap(
+                    fieldError -> fieldError.getField(),
+                    fieldError -> fieldError.getDefaultMessage()
+            ));
+        return ResponseEntity.badRequest().body(errors);
+    }
 }

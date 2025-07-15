@@ -2,6 +2,7 @@ package com.juan.curso.springboot.app.sprinbootcrud.services;
 
 import com.juan.curso.springboot.app.sprinbootcrud.model.Product;
 import com.juan.curso.springboot.app.sprinbootcrud.repositories.ProductRepository;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
