@@ -8,11 +8,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExistByUsernameValidation implements ConstraintValidator<ExistByUsername, String> {
-    @Autowired
+    @Autowired  // Inyección por setter
     private UserServices userServices;
 
     @Override
-    public boolean isValid(String username, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(String username, ConstraintValidatorContext context) {
+        if (userServices == null) {
+            return true;
+        }
         return !userServices.existsByUsername(username);
     }
 }
