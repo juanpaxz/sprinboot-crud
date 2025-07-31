@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users")
+    @RequestMapping("/api/users")
 public class UserController {
 
     private UserServices userServices;
