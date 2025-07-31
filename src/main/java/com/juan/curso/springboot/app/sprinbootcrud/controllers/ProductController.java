@@ -41,6 +41,7 @@ public class ProductController {
         }
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
